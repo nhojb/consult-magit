@@ -2,7 +2,8 @@
 
 ;; Copyright (C) 2026 John Buckley
 
-;; Author: John Buckley <john@raycast.com>
+;; Author: John Buckley <nhoj.buckley@gmail.com>
+;; Assisted-by: claude:claude-opus-4.8
 ;; URL: https://github.com/nhojb/consult-magit
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "28.1") (consult "1.0") (magit "3.0"))
