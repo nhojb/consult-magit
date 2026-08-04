@@ -158,18 +158,46 @@ See `consult--multi' for a description of the source format."
 
 ;;;; Command
 
+(defun consult-magit--prepare-sources ()
+  "Resolve `consult-magit-sources' for the current invocation.
+Return the enabled sources that actually have candidates, with their
+items pre-computed and the first non-empty source marked as the
+default.  This lets the command offer the history (or known
+repositories) even when no `magit-status' buffer is currently open."
+  (let (result default-set)
+    (dolist (sym consult-magit-sources)
+      (let* ((src (if (symbolp sym) (symbol-value sym) sym))
+             (enabled (funcall (or (plist-get src :enabled) #'always)))
+             (items (and enabled (plist-get src :items)))
+             (items (if (functionp items) (funcall items) items)))
+        (when items
+          ;; Copy so we can override :items and :default without mutating the
+          ;; source variable, and reuse the already-computed items.
+          (let ((copy (copy-sequence src)))
+            (setq copy (plist-put copy :items items))
+            (setq copy (plist-put copy :default (unless default-set
+                                                  (setq default-set t))))
+            (push copy result)))))
+    (nreverse result)))
+
 ;;;###autoload
 (defun consult-magit ()
   "Switch to a magit repository using `consult'.
 Offers open `magit-status' buffers, a history of previously opened
 repositories, and optionally repositories known to magit (see
-`consult-magit-include-known-repositories')."
+`consult-magit-include-known-repositories').
+
+The history and known repositories are available even when no
+`magit-status' buffer is currently open."
   (interactive)
-  (consult--multi consult-magit-sources
-                  :require-match t
-                  :sort nil
-                  :prompt "Switch to repository: "
-                  :history 'consult-magit--history))
+  (let ((sources (consult-magit--prepare-sources)))
+    (unless sources
+      (user-error "No open magit buffers or repository history"))
+    (consult--multi sources
+                    :require-match t
+                    :sort nil
+                    :prompt "Switch to repository: "
+                    :history 'consult-magit--history)))
 
 (provide 'consult-magit)
 ;;; consult-magit.el ends here
