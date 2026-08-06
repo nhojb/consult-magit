@@ -57,6 +57,6 @@ between Emacs sessions, add it to `savehist-additional-variables`:
 
 ## How history is recorded
 
-`consult-magit` adds `consult-magit--record-repo` to
+`consult-magit` adds `consult-magit-record-repo` to
 `magit-status-mode-hook`; every time a `magit-status` buffer is created the
 repository top-level is pushed to the front of `consult-magit-repo-history`.

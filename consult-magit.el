@@ -61,7 +61,7 @@ Ordered most-recently-opened first.  Add this variable to
 ;;;; History tracking
 
 ;;;###autoload
-(defun consult-magit--record-repo ()
+(defun consult-magit-record-repo ()
   "Record the current repository in `consult-magit-repo-history'.
 Intended for use in `magit-status-mode-hook', where
 `default-directory' is the repository top-level."
@@ -76,7 +76,7 @@ Intended for use in `magit-status-mode-hook', where
                 nil)))))
 
 ;;;###autoload
-(add-hook 'magit-status-mode-hook #'consult-magit--record-repo)
+(add-hook 'magit-status-mode-hook #'consult-magit-record-repo)
 
 ;;;; Sources
 
