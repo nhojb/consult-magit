@@ -26,6 +26,7 @@ With `use-package` and a local checkout:
 ```elisp
 (use-package consult-magit
   :vc (:url "https://github.com/nhojb/consult-magit")
+  :hook (magit-status-mode . consult-magit-record-repo)
   :bind ("C-x C-g" . consult-magit))
 ```
 
@@ -34,8 +35,12 @@ Or for a local directory (matching a `git-package`/`:git` style):
 ```elisp
 (use-package consult-magit
   :load-path "~/Projects/nhojb/emacs/consult-magit"
+  :hook (magit-status-mode . consult-magit-record-repo)
   :bind ("C-x C-g" . consult-magit))
 ```
+
+The `:hook` line enables repository history (see below); omit it if you only
+want to switch between currently open `magit-status` buffers.
 
 ## Persisting history across sessions
 
@@ -55,8 +60,19 @@ between Emacs sessions, add it to `savehist-additional-variables`:
 | `consult-magit-include-known-repositories` | `nil` | When non-nil, offer repositories from `magit-repository-directories`. |
 | `consult-magit-sources` | see source | The list of consult sources used by `consult-magit`. |
 
-## How history is recorded
+## Recording repository history
 
-`consult-magit` adds `consult-magit-record-repo` to
-`magit-status-mode-hook`; every time a `magit-status` buffer is created the
-repository top-level is pushed to the front of `consult-magit-repo-history`.
+To build up a history of repositories, add `consult-magit-record-repo` to
+`magit-status-mode-hook`. Every time a `magit-status` buffer is created the
+repository top-level is then pushed to the front of
+`consult-magit-repo-history`.
+
+The `:hook` line in the installation examples above does this. Without
+`use-package` add it directly:
+
+```elisp
+(add-hook 'magit-status-mode-hook #'consult-magit-record-repo)
+```
+
+Recording is opt-in: if you do not install the hook, `consult-magit` simply
+offers the currently open `magit-status` buffers.

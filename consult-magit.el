@@ -39,6 +39,11 @@
 ;; - a history of repositories previously opened with magit, so you can
 ;;   quickly re-open a local repo even after its buffer has been killed.
 ;;
+;; To build up a history of repositories, add `consult-magit-record-repo' to
+;; `magit-status-mode-hook'.  Every time a `magit-status' buffer is created the
+;; repository top-level is then pushed to the front of
+;; `consult-magit-repo-history'.
+;;
 ;; Optionally (see `consult-magit-include-known-repositories') it can also
 ;; offer repositories discovered from `magit-repository-directories'.
 ;;
@@ -93,9 +98,6 @@ Intended for use in `magit-status-mode-hook', where
         (setcdr (nthcdr (1- consult-magit-history-length)
                         consult-magit-repo-history)
                 nil)))))
-
-;;;###autoload
-(add-hook 'magit-status-mode-hook #'consult-magit-record-repo)
 
 ;;;; Sources
 
